@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:test_market/AppData.dart';
 import 'package:test_market/Model/AppSlider.dart';
+import 'package:test_market/Model/Boxes.dart';
 import 'package:test_market/Model/Category.dart';
 import 'package:test_market/Model/Product.dart';
 import 'package:http/http.dart' as http;
@@ -18,9 +19,12 @@ import 'Shop_Screen.dart';
 List<Product> new_product = [];
 List<Product> order_product = [];
 List<Category> category_home = [];
+List<Category> category_shirini = [];
+List<Category> category_coffee = [];
+List<Boxes> box___________mustchange_futureee_______ = [];
 BuildContext context;
 
-int _selectedIndex = null;
+int _selectedIndex = 0;
 
 class homePage extends StatefulWidget {
   @override
@@ -85,16 +89,32 @@ class _homePageState extends State<homePage> {
     getProductList("new_product", new_product);
     getProductList("order_product", order_product);
 
-  category_home.add(new Category(title:" شیرینی‌ تر ",img:"http://192.168.43.159/flutter_app1/Category/tar.png"));
-  category_home.add(new Category(title:" شیرینی‌ خشک ",img:"http://192.168.43.159/flutter_app1/Category/khoshk.png"));
-  category_home.add(new Category(title:" قهوه ",img:"http://192.168.43.159/flutter_app1/Category/ghahve.png"));
-  category_home.add(new Category(title:" دونات ",img:"http://192.168.43.159/flutter_app1/Category/donat.png"));
-  category_home.add(new Category(title:" کیک روز ",img:"http://192.168.43.159/flutter_app1/Category/cake.png"));
-  category_home.add(new Category(title:" فینگر فود ",img:"http://192.168.43.159/flutter_app1/Category/fingerfood.png"));
-  category_home.add(new Category(title:" آجیل ",img:"http://192.168.43.159/flutter_app1/Category/ajil.png"));
-  category_home.add(new Category(title:" شکلات ",img:"http://192.168.43.159/flutter_app1/Category/shokolat.png"));
-  category_home.add(new Category(title:" یکبار مصرف ",img:"http://192.168.43.159/flutter_app1/Category/yebarmasraf.png"));
 
+    if(category_home.length==0)
+{  category_home.add(new Category(title:" شیرینی‌ تر ",img:"http://192.168.43.159/flutter_app1/Category/tar.png",cattype: 0));
+  category_home.add(new Category(title:" شیرینی‌ خشک ",img:"http://192.168.43.159/flutter_app1/Category/khoshk.png",cattype: 0));
+  category_home.add(new Category(title:" دونات ",img:"http://192.168.43.159/flutter_app1/Category/donat.png",cattype: 0));
+  category_home.add(new Category(title:" کیک روز ",img:"http://192.168.43.159/flutter_app1/Category/cake.png",cattype: 0));
+  category_home.add(new Category(title:" فینگر فود ",img:"http://192.168.43.159/flutter_app1/Category/fingerfood.png",cattype: 0));
+  category_home.add(new Category(title:" آجیل ",img:"http://192.168.43.159/flutter_app1/Category/ajil.png",cattype: 0));
+  category_home.add(new Category(title:" شکلات ",img:"http://192.168.43.159/flutter_app1/Category/shokolat.png",cattype: 0));
+  category_home.add(new Category(title:" یکبار مصرف ",img:"http://192.168.43.159/flutter_app1/Category/yebarmasraf.png",cattype: 0));
+  category_home.add(new Category(title:" نوشیدنی گرم ",img:"http://192.168.43.159/flutter_app1/Category/ghahve.png",cattype: 1));
+  category_home.add(new Category(title:" نوشیدنی سرد ",img:"http://192.168.43.159/flutter_app1/Category/ghahve.png",cattype: 1));}
+
+
+    if(category_shirini.length==0)
+{  category_shirini.add(new Category(title:" شیرینی‌ تر ",img:"http://192.168.43.159/flutter_app1/Category/tar.png",cattype: 0));
+  category_shirini.add(new Category(title:" شیرینی‌ خشک ",img:"http://192.168.43.159/flutter_app1/Category/khoshk.png",cattype: 0));
+  category_shirini.add(new Category(title:" دونات ",img:"http://192.168.43.159/flutter_app1/Category/donat.png",cattype: 0));
+  category_shirini.add(new Category(title:" کیک روز ",img:"http://192.168.43.159/flutter_app1/Category/cake.png",cattype: 0));
+  category_shirini.add(new Category(title:" فینگر فود ",img:"http://192.168.43.159/flutter_app1/Category/fingerfood.png",cattype: 0));
+  category_shirini.add(new Category(title:" آجیل ",img:"http://192.168.43.159/flutter_app1/Category/ajil.png",cattype: 0));
+  category_shirini.add(new Category(title:" شکلات ",img:"http://192.168.43.159/flutter_app1/Category/shokolat.png",cattype: 0));
+  category_shirini.add(new Category(title:" یکبار مصرف ",img:"http://192.168.43.159/flutter_app1/Category/yebarmasraf.png",cattype: 0));}
+  if(category_coffee.length==0)
+{  category_coffee.add(new Category(title:" نوشیدنی گرم ",img:"http://192.168.43.159/flutter_app1/Category/ghahve.png",cattype: 1));
+  category_coffee.add(new Category(title:" نوشیدنی سرد ",img:"http://192.168.43.159/flutter_app1/Category/ghahve.png",cattype: 1));}
 
 //    Color(0xffFBC420)
 //    Color(0xff003333)
@@ -214,13 +234,11 @@ class _homePageState extends State<homePage> {
               items: [
 
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.cake), title: Text("home"),),
+                  icon: Icon(Icons.cake), title: Text("خانه"),),
                 BottomNavigationBarItem(
-                    icon: Icon(Icons.store), title: Text("coffee")),
+                    icon: Icon(Icons.store), title: Text("قنادی")),
                 BottomNavigationBarItem(
-                    icon: Icon(Icons.battery_charging_full), title: Text("stores")),
-                BottomNavigationBarItem(
-                    icon: Icon(Icons.shopping_cart), title: Text("cart")),
+                    icon: Icon(Icons.shopping_cart), title: Text("سبد خرید")),
 
         ],
         onTap: (index) {
@@ -239,7 +257,6 @@ class _homePageState extends State<homePage> {
 
     page_screen.add(_home_page_screen());
     page_screen.add(Shop_Screen());
-    page_screen.add(Cake_Screen());
     page_screen.add(Cart_Screen());
 
     return page_screen[index];
@@ -433,7 +450,7 @@ Widget indexProductView(context,int index, List<Product> list) {
 
   ],)
 
-    ,onTap: (){Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=> ProductPage(list[index].id,list[index].title,'product')));},);
+    ,onTap: (){Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=> ProductPage(list[index].id,box___________mustchange_futureee_______)));},);
 }
 
 

@@ -161,7 +161,7 @@ class _Cake_ScreenState extends State<Cake_Screen> {
   Widget ExplorBox (context,int i){
 
 
-    return GestureDetector(onTap : (){Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=> ProductPage(cake_product[i].id,cake_product[i].title,'cake_product')));},
+    return GestureDetector(onTap : (){Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=> ProductPage(cake_product[i].id,box___________mustchange_futureee_______)));},
       child:Container( decoration: BoxDecoration(border: Border.all(width: 0.1 , color: Colors.grey),),
           child: Column(children: <Widget>[
         Image(image: NetworkImage(cake_product[i].img)),
