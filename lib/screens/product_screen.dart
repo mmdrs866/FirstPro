@@ -7,9 +7,14 @@ import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:test_market/Model/Boxes.dart';
+import 'package:test_market/Model/Cups.dart';
+import 'package:test_market/Model/PriceCup.dart';
 import 'package:test_market/Model/PriceTedad.dart';
 import 'package:test_market/Model/Product.dart';
 import 'dart:convert' as convert;
+
+import 'package:test_market/Model/SpecialCake.dart';
+import 'package:test_market/Model/SpecialCake_afzodani.dart';
 
 
 
@@ -18,13 +23,20 @@ class ProductPage extends StatefulWidget {
 
   int product_id;
   List<Boxes> shopboxdetails;
+  List<Cups> shopcupdetails;
+  List<SpecialCake> shopsoecialcakedetails;
+  List<SpecialCake_afzodani> shopsoecialcakedetailsafzodani;
 
 
-  ProductPage(int id,List<Boxes> boxes){
+  ProductPage(int id,List<Boxes> boxes,List<Cups> cups,List<SpecialCake> specialcake){
 
     product_id=id;
     shopboxdetails=boxes;
+    shopcupdetails=cups;
+    shopsoecialcakedetails=specialcake;
     for(int i=0; i<shopboxdetails.length;i++){shopboxdetails[i].chekbox=false;}
+    for(int i=0; i<shopcupdetails.length;i++){shopcupdetails[i].chekbox=false;}
+    for(int i=0; i<shopsoecialcakedetails.length;i++){shopsoecialcakedetails[i].chekbox=false;}
 
 //    this.title = title.length>25 ? title.substring(0,30)+"..." : title ;
 
@@ -46,6 +58,8 @@ class _ProductPageState extends State<ProductPage> {
   var _checkBeforEspanjsade=false;
 
   int boxeselectedindex=null;
+  int cupeselectedindex=null;
+  int specialcakeselectedindex=null;
   bool _visible=true;
 
 
@@ -60,7 +74,7 @@ class _ProductPageState extends State<ProductPage> {
     thisproduct.id=1;
     thisproduct.price=27500;
     thisproduct.darsad_takhfif=20;
-    thisproduct.category_type=0;
+    thisproduct.category_type=3;
     thisproduct.saghfekharid=6;
     thisproduct.rate=4.5;
     thisproduct.active_product_status=true;
@@ -75,8 +89,13 @@ class _ProductPageState extends State<ProductPage> {
     pt.add(new PriceTedad(price: 7300,tedad: 5,vazn: 2,radifi: true));
     pt.add(new PriceTedad(price: 44000,tedad: 36,vazn: 2,radifi: false));
 
+    List<PriceCup> pc =[];
+    pc.add(new PriceCup(price:18000,size: 2));
+    pc.add(new PriceCup(price:21000,size: 3));
+
 
     thisproduct.pricetedad=pt;
+    thisproduct.pricecup=pc;
     thisproduct.comment;
     thisproduct.offers;
     thisproduct.cake_sefareshi;
@@ -92,40 +111,43 @@ class _ProductPageState extends State<ProductPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             new FloatingActionButton.extended(
-              backgroundColor: Colors.green[600],
-              foregroundColor: Colors.white,
-              label: Text('اضافه به فرایند خرید',style: TextStyle(fontSize: 20),),
+              backgroundColor: thisproduct.active_product_status==true?Colors.green[600]:Colors.grey[400],
+              foregroundColor: thisproduct.active_product_status==true?Colors.white:Colors.black38,
+              label: Text('اضافه به فرایند خرید',style: TextStyle(fontSize: 17),),
               icon: Icon(Icons.add),
-              onPressed: () {      showDialog(
-                context: context,
-                builder: (context) {
-                  return StatefulBuilder(
-                    builder: (context, setState) {
-                      return AlertDialog(
-                        content: StatefulBuilder(
-                            builder: (context,setState){return Container(
-                                child: Stack(
-                                    overflow: Overflow.visible,
-                                    children: <Widget>[
-                                      Positioned(
-                                        right: -40.0,
-                                        top: -40.0,
-                                        child: InkResponse(
-                                          onTap: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: CircleAvatar(
-                                            child: Icon(Icons.close),
-                                            backgroundColor: Colors.red,
-                                          ),
-                                        ),
-                                      ),
-                                      SingleChildScrollView(child: Sefareshtyp0(),),]));})
+              onPressed: () {
+                if(thisproduct.active_product_status==true){
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return StatefulBuilder(
+                        builder: (context, setState) {
+                          return AlertDialog(
+                              content: StatefulBuilder(
+                                  builder: (context,setState){return Container(
+                                      child: Stack(
+                                          overflow: Overflow.visible,
+                                          children: <Widget>[
+                                            Positioned(
+                                              right: -40.0,
+                                              top: -40.0,
+                                              child: InkResponse(
+                                                onTap: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: CircleAvatar(
+                                                  child: Icon(Icons.close),
+                                                  backgroundColor: Colors.red,
+                                                ),
+                                              ),
+                                            ),
+                                            SingleChildScrollView(child: SwitchCaseShop(thisproduct.category_type),),]));})
+                          );
+                        },
                       );
                     },
                   );
-                },
-              );},
+                };},
             ),
           ],
         )
@@ -211,12 +233,29 @@ class _ProductPageState extends State<ProductPage> {
 
             Container(margin: EdgeInsets.only(top: 10),child:Text(thisproduct.tozihat),),
 
-          Container(
+            thisproduct.category_type==0
+                ? Container(
               height: thisproduct.pricetedad.length.toDouble()*110,
               child: ListView.builder(
                 physics: NeverScrollableScrollPhysics(),
                 itemBuilder: pricetedadlist,
                 itemCount: thisproduct.pricetedad.length,),)
+                : Text(""),
+
+          thisproduct.category_type==4
+              ? Container(
+            height: thisproduct.pricetedad.length.toDouble()*110,
+            child: ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              itemBuilder: pricecuplist,
+              itemCount: thisproduct.pricecup.length,),)
+              : Text(""),
+
+          Container(height: 30,),
+
+
+
+
             
 //            Container(
 //              child: Column(
@@ -242,6 +281,44 @@ class _ProductPageState extends State<ProductPage> {
         : Container(child: Center(child: CircularProgressIndicator()));
 
   }
+  Widget pricecuplist(context, index){
+    var formatter=new NumberFormat('###,###');
+
+    return Container(
+      margin: EdgeInsets.only(bottom: 10),
+      child: Column(
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Column(crossAxisAlignment: CrossAxisAlignment.start,children: <Widget>[
+                Container(margin:EdgeInsets.only(right: 15),child: Text(" سایز لیوان : " + widget.shopcupdetails[index].size ,style: TextStyle(fontSize: 17))),
+                Container(margin:EdgeInsets.only(right: 15),child: Text(" حجم لیوان :  " + widget.shopcupdetails[index].hajm.toString()+ " ml",style: TextStyle(fontSize: 15))),
+              ],),
+
+              Stack(
+                children: <Widget>[
+                  thisproduct.darsad_takhfif==0
+                      ?Text("")
+                      :Container(margin: EdgeInsets.only(top: 20,left: 30) ,height: 55, width : 70 , decoration : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20)),color: Colors.red),
+                      child:Container(margin: EdgeInsets.only(bottom: 2),alignment:Alignment.bottomCenter,child: Text(thisproduct.darsad_takhfif.toString()+"% تخفیف", style: TextStyle(fontSize: 11,color: Colors.white),))),
+
+                  Container(margin: EdgeInsets.only(top: 0,left: 30,bottom: thisproduct.darsad_takhfif==0?20:0) ,height: thisproduct.darsad_takhfif==0?65:55, width : 70 , decoration : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20)),color: Colors.white,border: Border.all(color: thisproduct.darsad_takhfif==0?Colors.grey[200]:Colors.red)),child: Center(
+                    child: thisproduct.darsad_takhfif==0
+                        ?Text(formatter.format(thisproduct.pricecup[index].price).toString(),style: TextStyle(fontSize: 16),)
+                        :Column(children: <Widget>[
+                      Container(margin: EdgeInsets.only(top: 4),child: Text(formatter.format(thisproduct.pricecup[index].price).toString(),style: TextStyle(fontSize: 13,color: Colors.grey[400],decoration: TextDecoration.lineThrough),)),
+                      Container(margin: EdgeInsets.only(top: 0),child: Text(formatter.format(thisproduct.pricecup[index].price/100*(100-thisproduct.darsad_takhfif)).toString(),style: TextStyle(fontSize: 17),)),
+                    ],),),)
+
+                ],
+              )
+            ],),
+          Divider(endIndent: 40,indent: 40,)
+        ],
+      ),
+    );
+  }
 
 
   Widget pricetedadlist(context, index){
@@ -254,14 +331,9 @@ class _ProductPageState extends State<ProductPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              thisproduct.pricetedad[index].radifi==false
-                ?Column(crossAxisAlignment: CrossAxisAlignment.start,children: <Widget>[
+              Column(crossAxisAlignment: CrossAxisAlignment.start,children: <Widget>[
                   Container(margin:EdgeInsets.only(right: 15),child: Text(" قیمت در جعبه " + thisproduct.pricetedad[index].vazn.toString() + " کیلویی " ,style: TextStyle(fontSize: 17),)),
-                  Container(margin:EdgeInsets.only(right: 15),child: Text( " تعداد : حدودا " + thisproduct.pricetedad[index].tedad.toString() + " عدد",style: TextStyle(fontSize: 15))),
-              ],)
-                :Column(crossAxisAlignment: CrossAxisAlignment.start,children: <Widget>[
-                    Container(margin:EdgeInsets.only(right: 15),child: Text(" قیمت یک ردیف در جعبه " + thisproduct.pricetedad[index].vazn.toString() + " کیلویی ",style: TextStyle(fontSize: 17))),
-                    Container(margin:EdgeInsets.only(right: 15),child: Text(" تعداد : حدودا " + thisproduct.pricetedad[index].tedad.toString() + " عدد",style: TextStyle(fontSize: 15))),
+                  Container(margin:EdgeInsets.only(right: 15,top: 3),child: Text( " تعداد : حدودا " + thisproduct.pricetedad[index].tedad.toString() + " عدد",style: TextStyle(fontSize: 14))),
               ],),
 
             Stack(
@@ -269,14 +341,14 @@ class _ProductPageState extends State<ProductPage> {
                 thisproduct.darsad_takhfif==0
                     ?Text("")
                     :Container(margin: EdgeInsets.only(top: 20,left: 30) ,height: 55, width : 70 , decoration : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20)),color: Colors.red),
-                    child:Container(alignment:Alignment.bottomCenter,child: Text(thisproduct.darsad_takhfif.toString()+"% تخفیف", style: TextStyle(fontSize: 12,color: Colors.white),))),
+                    child:Container(margin: EdgeInsets.only(bottom: 2),alignment:Alignment.bottomCenter,child: Text(thisproduct.darsad_takhfif.toString()+"% تخفیف", style: TextStyle(fontSize: 11,color: Colors.white),))),
 
                 Container(margin: EdgeInsets.only(top: 0,left: 30,bottom: thisproduct.darsad_takhfif==0?20:0) ,height: thisproduct.darsad_takhfif==0?65:55, width : 70 , decoration : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20)),color: Colors.white,border: Border.all(color: thisproduct.darsad_takhfif==0?Colors.grey[200]:Colors.red)),child: Center(
                   child: thisproduct.darsad_takhfif==0
                       ?Text(formatter.format(thisproduct.pricetedad[index].price).toString(),style: TextStyle(fontSize: 16),)
                       :Column(children: <Widget>[
-                    Container(margin: EdgeInsets.only(top: 8),child: Text(formatter.format(thisproduct.pricetedad[index].price).toString(),style: TextStyle(fontSize: 14,color: Colors.grey[400],decoration: TextDecoration.lineThrough),)),
-                    Container(margin: EdgeInsets.only(top: 3),child: Text(formatter.format(thisproduct.pricetedad[index].price/100*(100-thisproduct.darsad_takhfif)).toString(),style: TextStyle(fontSize: 17),)),
+                    Container(margin: EdgeInsets.only(top: 4),child: Text(formatter.format(thisproduct.pricetedad[index].price).toString(),style: TextStyle(fontSize: 13,color: Colors.grey[400],decoration: TextDecoration.lineThrough),)),
+                    Container(margin: EdgeInsets.only(top: 0),child: Text(formatter.format(thisproduct.pricetedad[index].price/100*(100-thisproduct.darsad_takhfif)).toString(),style: TextStyle(fontSize: 17),)),
                   ],),),)
 
               ],
@@ -313,32 +385,7 @@ class _ProductPageState extends State<ProductPage> {
     });
 
   }
-  
-  void _CheckGerdoo(bool valu){
-      setState(() {
-        if (valu==false){_checkBeforGerdoo= false;}
-        if (valu==true){_checkBeforGerdoo= true;}
-      });
-      print(_checkBeforGerdoo);
-  }void _CheckMoz(bool valu){
-      setState(() {
-        if (valu==false){_checkBeforMoz= false;}
-        if (valu==true){_checkBeforMoz= true;}
-      });
-      print(_checkBeforMoz);
-  }void _CheckEspanjnescafe(bool valu){
-      setState(() {
-        if (valu==false){_checkBeforEspanjnescafe= false;}
-        if (valu==true){_checkBeforEspanjnescafe= true;}
-      });
-      print(_checkBeforEspanjnescafe);
-  }void _CheckEspanjsade(bool valu){
-      setState(() {
-        if (valu==false){_checkBeforEspanjsade= false;}
-        if (valu==true){_checkBeforEspanjsade= true;}
-      });
-      print(_checkBeforEspanjsade);
-  }
+
 
   Widget PishnahadiList(BuildContext context, int index) {
     return Pishnahadi(context,index, thisproduct.offers);
@@ -372,7 +419,7 @@ class _ProductPageState extends State<ProductPage> {
 
     ],)
 
-      ,onTap: (){Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=> ProductPage(list[index].id,widget.shopboxdetails)));},);
+      ,onTap: (){Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=> ProductPage(list[index].id,widget.shopboxdetails,widget.shopcupdetails,widget.shopsoecialcakedetails)));},);
   }
 
 
@@ -424,14 +471,14 @@ class _ProductPageState extends State<ProductPage> {
                     thisproduct.darsad_takhfif==0
                         ?Text("")
                         :Container(margin: EdgeInsets.only(top: 40,left: 0) ,height: 55, width : 70 , decoration : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20)),color: Colors.red),
-                        child:Container(alignment:Alignment.bottomCenter,child: Text(thisproduct.darsad_takhfif.toString()+"% تخفیف", style: TextStyle(fontSize: 12,color: Colors.white),))),
+                        child:Container(alignment:Alignment.bottomCenter,margin: EdgeInsets.only(bottom: 2),child: Text(thisproduct.darsad_takhfif.toString()+"% تخفیف", style: TextStyle(fontSize: 11,color: Colors.white),))),
 
                     Container(margin: EdgeInsets.only(top: 20,left: 0,bottom: thisproduct.darsad_takhfif==0?20:0) ,height: thisproduct.darsad_takhfif==0?65:55, width : 70 , decoration : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20)),color: Colors.white,border: Border.all(color: thisproduct.darsad_takhfif==0?Colors.grey[200]:Colors.red)),child: Center(
                       child: thisproduct.darsad_takhfif==0
                           ?Text(formatter.format(gheymate_kol).toString(),style: TextStyle(fontSize: 16),)
                           :Column(children: <Widget>[
-                        Container(margin: EdgeInsets.only(top: 8),child: Text(formatter.format(gheymate_kol).toString(),style: TextStyle(fontSize: 14,color: Colors.grey[400],decoration: TextDecoration.lineThrough),)),
-                        Container(margin: EdgeInsets.only(top: 3),child: Text(formatter.format(gheymate_kol/100*(100-thisproduct.darsad_takhfif)).toString(),style: TextStyle(fontSize: 17),)),
+                        Container(margin: EdgeInsets.only(top: 4),child: Text(formatter.format(gheymate_kol).toString(),style: TextStyle(fontSize: 13,color: Colors.grey[400],decoration: TextDecoration.lineThrough),)),
+                        Container(margin: EdgeInsets.only(top: 0),child: Text(formatter.format(gheymate_kol/100*(100-thisproduct.darsad_takhfif)).toString(),style: TextStyle(fontSize: 17),)),
                       ],),),)
 
                   ],
@@ -496,14 +543,14 @@ class _ProductPageState extends State<ProductPage> {
                 thisproduct.darsad_takhfif==0
                     ?Text("")
                     :Container(margin: EdgeInsets.only(top: 40,left: 0) ,height: 55, width : 70 , decoration : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20)),color: Colors.red),
-                    child:Container(alignment:Alignment.bottomCenter,child: Text(thisproduct.darsad_takhfif.toString()+"% تخفیف", style: TextStyle(fontSize: 12,color: Colors.white),))),
+                    child:Container(alignment:Alignment.bottomCenter,margin: EdgeInsets.only(bottom: 2),child: Text(thisproduct.darsad_takhfif.toString()+"% تخفیف", style: TextStyle(fontSize: 11,color: Colors.white),))),
 
                 Container(margin: EdgeInsets.only(top: 20,left: 0,bottom: thisproduct.darsad_takhfif==0?20:0) ,height: thisproduct.darsad_takhfif==0?65:55, width : 70 , decoration : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20)),color: Colors.white,border: Border.all(color: thisproduct.darsad_takhfif==0?Colors.grey[200]:Colors.red)),child: Center(
                   child: thisproduct.darsad_takhfif==0
                       ?Text(formatter.format(gheymate_kol).toString(),style: TextStyle(fontSize: 16),)
                       :Column(children: <Widget>[
-                    Container(margin: EdgeInsets.only(top: 8),child: Text(formatter.format(gheymate_kol).toString(),style: TextStyle(fontSize: 14,color: Colors.grey[400],decoration: TextDecoration.lineThrough),)),
-                    Container(margin: EdgeInsets.only(top: 3),child: Text(formatter.format(gheymate_kol/100*(100-thisproduct.darsad_takhfif)).toString(),style: TextStyle(fontSize: 17),)),
+                    Container(margin: EdgeInsets.only(top: 4),child: Text(formatter.format(gheymate_kol).toString(),style: TextStyle(fontSize: 13,color: Colors.grey[400],decoration: TextDecoration.lineThrough),)),
+                    Container(margin: EdgeInsets.only(top: 0),child: Text(formatter.format(gheymate_kol/100*(100-thisproduct.darsad_takhfif)).toString(),style: TextStyle(fontSize: 17),)),
                   ],),),)
 
               ],
@@ -527,6 +574,19 @@ class _ProductPageState extends State<ProductPage> {
 
     ],);
   }
+
+
+  SwitchCaseShop(int type){
+    switch(type){
+      case 0: return Sefareshtyp0();
+      case 1: return Sefareshtyp1();
+      case 2: return Sefareshtyp2();
+      case 3: return Sefareshtyp3();
+      case 4: return Sefareshtyp4();
+
+    }
+  }
+
 
 
 //  category shirini
@@ -650,14 +710,14 @@ class _ProductPageState extends State<ProductPage> {
                         thisproduct.darsad_takhfif==0
                             ?Text("")
                             :Container(margin: EdgeInsets.only(top: 40,left: 0) ,height: 55, width : 70 , decoration : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20)),color: Colors.red),
-                            child:Container(alignment:Alignment.bottomCenter,child: Text(thisproduct.darsad_takhfif.toString()+"% تخفیف", style: TextStyle(fontSize: 12,color: Colors.white),))),
+                            child:Container(alignment:Alignment.bottomCenter,margin: EdgeInsets.only(bottom: 2),child: Text(thisproduct.darsad_takhfif.toString()+"% تخفیف", style: TextStyle(fontSize: 11,color: Colors.white),))),
 
                         Container(margin: EdgeInsets.only(top: 20,left: 0,bottom: thisproduct.darsad_takhfif==0?20:0) ,height: thisproduct.darsad_takhfif==0?65:55, width : 70 , decoration : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20)),color: Colors.white,border: Border.all(color: thisproduct.darsad_takhfif==0?Colors.grey[200]:Colors.red)),child: Center(
                           child: thisproduct.darsad_takhfif==0
                               ?Text(formatter.format(gheymate_kol).toString(),style: TextStyle(fontSize: 16),)
                               :Column(children: <Widget>[
-                            Container(margin: EdgeInsets.only(top: 8),child: Text(formatter.format(gheymate_kol).toString(),style: TextStyle(fontSize: 14,color: Colors.grey[400],decoration: TextDecoration.lineThrough),)),
-                            Container(margin: EdgeInsets.only(top: 3),child: Text(formatter.format(gheymate_kol/100*(100-thisproduct.darsad_takhfif)).toString(),style: TextStyle(fontSize: 17),)),
+                            Container(margin: EdgeInsets.only(top: 4),child: Text(formatter.format(gheymate_kol).toString(),style: TextStyle(fontSize: 13,color: Colors.grey[400],decoration: TextDecoration.lineThrough),)),
+                            Container(margin: EdgeInsets.only(top: 0),child: Text(formatter.format(gheymate_kol/100*(100-thisproduct.darsad_takhfif)).toString(),style: TextStyle(fontSize: 17),)),
                           ],),),)
 
                       ],
@@ -715,14 +775,14 @@ class _ProductPageState extends State<ProductPage> {
                         thisproduct.darsad_takhfif==0
                             ?Text("")
                             :Container(margin: EdgeInsets.only(top: 40,left: 0) ,height: 55, width : 70 , decoration : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20)),color: Colors.red),
-                            child:Container(alignment:Alignment.bottomCenter,child: Text(thisproduct.darsad_takhfif.toString()+"% تخفیف", style: TextStyle(fontSize: 12,color: Colors.white),))),
+                            child:Container(alignment:Alignment.bottomCenter,margin: EdgeInsets.only(bottom: 2),child: Text(thisproduct.darsad_takhfif.toString()+"% تخفیف", style: TextStyle(fontSize: 11,color: Colors.white),))),
 
                         Container(margin: EdgeInsets.only(top: 20,left: 0,bottom: thisproduct.darsad_takhfif==0?20:0) ,height: thisproduct.darsad_takhfif==0?65:55, width : 70 , decoration : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20)),color: Colors.white,border: Border.all(color: thisproduct.darsad_takhfif==0?Colors.grey[200]:Colors.red)),child: Center(
                           child: thisproduct.darsad_takhfif==0
                               ?Text(formatter.format(gheymate_kol).toString(),style: TextStyle(fontSize: 16),)
                               :Column(children: <Widget>[
-                            Container(margin: EdgeInsets.only(top: 8),child: Text(formatter.format(gheymate_kol).toString(),style: TextStyle(fontSize: 14,color: Colors.grey[400],decoration: TextDecoration.lineThrough),)),
-                            Container(margin: EdgeInsets.only(top: 3),child: Text(formatter.format(gheymate_kol/100*(100-thisproduct.darsad_takhfif)).toString(),style: TextStyle(fontSize: 17),)),
+                            Container(margin: EdgeInsets.only(top: 4),child: Text(formatter.format(gheymate_kol).toString(),style: TextStyle(fontSize: 13,color: Colors.grey[400],decoration: TextDecoration.lineThrough),)),
+                            Container(margin: EdgeInsets.only(top: 0),child: Text(formatter.format(gheymate_kol/100*(100-thisproduct.darsad_takhfif)).toString(),style: TextStyle(fontSize: 17),)),
                           ],),),)
 
                       ],
@@ -756,16 +816,182 @@ class _ProductPageState extends State<ProductPage> {
 
     return StatefulBuilder(
         builder: (context,setState){return Container(
-            child: Text(""));});
+            child: Column(children: <Widget>[
+
+              Container(
+                color: Colors.green[100],
+                child: Text(" ابتدا وزن کیک را انتخاب کنید  ",textAlign: TextAlign.center,),),
+
+              Container(
+                margin: EdgeInsets.only(top: 5),
+                height: (widget.shopsoecialcakedetails.length*50).roundToDouble(),
+                width: MediaQuery.of(context).size.width/100*80,
+                child: ListView.builder(
+                    itemCount: widget.shopsoecialcakedetails.length,
+                    itemBuilder: (BuildContext,index){
+                      return Row(children: <Widget>[
+                        Text(widget.shopsoecialcakedetails[index].vazn.toString() + " کیلویی‌ مناسب برای: " + widget.shopsoecialcakedetails[index].tedad.toString() + "نفر"),
+                        Checkbox(
+                            value: this.widget.shopsoecialcakedetails[index].chekbox,
+                            onChanged: (bool value) {setState(() {
+                              for(int i=0 ; i<this.widget.shopsoecialcakedetails.length;i++){
+                                this.widget.shopsoecialcakedetails[i].chekbox=false;}
+                              this.widget.shopsoecialcakedetails[index].chekbox=value;
+                              specialcakeselectedindex = index;
+
+                            });})
+
+                      ],);}),),
+
+              RaisedButton(
+                onPressed: specialcakeselectedindex==null?null:() {setState(() {if(_visible==true){_visible = !_visible;};});},
+                child: specialcakeselectedindex==null
+                    ?Text("ظرف خودرا انتخاب کنید",style: TextStyle(color: Colors.white))
+                    :Text("تایید کیک "+ widget.shopsoecialcakedetails[specialcakeselectedindex].vazn.toString() + " کیلویی‌ ",style: TextStyle(color: Colors.white)),
+                elevation: specialcakeselectedindex==null?0:4,
+                color: specialcakeselectedindex==null?Colors.grey:Colors.green,
+              ),
+
+              AnimatedOpacity(
+                // If the widget is visible, animate to 0.0 (invisible).
+                // If the widget is hidden, animate to 1.0 (fully visible).
+                  opacity: _visible ? 0.15 : 1.0,
+                  duration: Duration(milliseconds: 500),
+                  // The green box must be a child of the AnimatedOpacity widget.
+                  child: Container(child:
+
+                  Column(children: <Widget>[
+
+
+
+                  ])))
+
+
+
+            ],));});
   }
 
   //  category ghahve
   Sefareshtyp4(){
+    var formatter=new NumberFormat('###,###');
+    int gheymate_kol= thisproduct.price;
+    int tedade_sefaresh = 1;
+    int maxzarfiat = thisproduct.saghfekharid;
 
 
     return StatefulBuilder(
         builder: (context,setState){return Container(
-            child: Text(""));});
+            child: Column(
+              children: <Widget>[
+
+
+
+                Container(
+                  color: Colors.green[100],
+                  child: Text("ابتدا سایز سفارش خود را انتخاب کنید",textAlign: TextAlign.center,),),
+
+                Container(
+                  height: (widget.shopcupdetails.length*50).roundToDouble(),
+                  width: MediaQuery.of(context).size.width/100*80,
+                  child: ListView.builder(
+                      itemCount: widget.shopcupdetails.length,
+                      itemBuilder: (BuildContext,index){
+                        return Row(children: <Widget>[
+                          Text(widget.shopcupdetails[index].size.toString() + " : " + widget.shopcupdetails[index].hajm.toString() + " ml"),
+                          Checkbox(
+                              value: this.widget.shopcupdetails[index].chekbox,
+                              onChanged: (bool value) {setState(() {
+                                for(int i=0 ; i<this.widget.shopcupdetails.length;i++){
+                                  this.widget.shopcupdetails[i].chekbox=false;}
+                                this.widget.shopcupdetails[index].chekbox=value;
+                                cupeselectedindex = index;
+
+                              });})
+
+                        ],);}),),
+
+                RaisedButton(
+                  onPressed: cupeselectedindex==null?null:() {setState(() {if(_visible==true){_visible = !_visible;};});},
+                  child: cupeselectedindex==null
+                      ?Text("ظرف خودرا انتخاب کنید",style: TextStyle(color: Colors.white))
+                      :Text("تائید ظرف"+ widget.shopcupdetails[cupeselectedindex].size.toString(),style: TextStyle(color: Colors.white)),
+                  elevation: cupeselectedindex==null?0:4,
+                  color: cupeselectedindex==null?Colors.grey:Colors.green,
+                ),
+
+                AnimatedOpacity(
+                  // If the widget is visible, animate to 0.0 (invisible).
+                  // If the widget is hidden, animate to 1.0 (fully visible).
+                    opacity: _visible ? 0.15 : 1.0,
+                    duration: Duration(milliseconds: 500),
+                    // The green box must be a child of the AnimatedOpacity widget.
+                    child: Container(child:
+
+                    Column(children: <Widget>[
+
+
+                      Container(
+                        color: Colors.green[100],
+                        child: Text("  تعداد محصول را انتخاب کنید  ",textAlign: TextAlign.center),),
+
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Container(margin: EdgeInsets.only(left: 5),height:75,child: Image(image: NetworkImage(thisproduct.img)),),
+                          Container(
+                            margin: EdgeInsets.only(right: 5),
+                            child: Stack(
+                              children: <Widget>[
+                                thisproduct.darsad_takhfif==0
+                                    ?Text("")
+                                    :Container(margin: EdgeInsets.only(top: 40,left: 0) ,height: 55, width : 70 , decoration : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20)),color: Colors.red),
+                                    child:Container(alignment:Alignment.bottomCenter,margin: EdgeInsets.only(bottom: 2),child: Text(thisproduct.darsad_takhfif.toString()+"% تخفیف", style: TextStyle(fontSize: 11,color: Colors.white),))),
+
+                                Container(margin: EdgeInsets.only(top: 20,left: 0,bottom: thisproduct.darsad_takhfif==0?20:0) ,height: thisproduct.darsad_takhfif==0?65:55, width : 70 , decoration : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20)),color: Colors.white,border: Border.all(color: thisproduct.darsad_takhfif==0?Colors.grey[200]:Colors.red)),child: Center(
+                                  child: thisproduct.darsad_takhfif==0
+                                      ?Text(formatter.format(gheymate_kol).toString(),style: TextStyle(fontSize: 16),)
+                                      :Column(children: <Widget>[
+                                    Container(margin: EdgeInsets.only(top: 4),child: Text(formatter.format(gheymate_kol).toString(),style: TextStyle(fontSize: 13,color: Colors.grey[400],decoration: TextDecoration.lineThrough),)),
+                                    Container(margin: EdgeInsets.only(top: 0),child: Text(formatter.format(gheymate_kol/100*(100-thisproduct.darsad_takhfif)).toString(),style: TextStyle(fontSize: 17),)),
+                                  ],),),)
+
+                              ],
+                            ),
+                          ),
+                          Container(child:Text(" تومان  ",style: TextStyle(color: Colors.grey[400],fontSize: 20),))
+                        ],
+                      ),
+                      Container(
+                        child: Row(mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            IconButton(icon: Icon(Icons.add), onPressed:  (){setState(() {tedade_sefaresh==maxzarfiat?null:gheymate_kol=gheymate_kol+(gheymate_kol/tedade_sefaresh).round();tedade_sefaresh==maxzarfiat?null:tedade_sefaresh+=1;});}),
+                            Text(tedade_sefaresh.toString()+"/"+maxzarfiat.toString()),
+                            IconButton(icon: Icon(Icons.remove), onPressed: (){setState(() {tedade_sefaresh==1?null:gheymate_kol=gheymate_kol-(gheymate_kol/tedade_sefaresh).round();tedade_sefaresh==1?null:tedade_sefaresh-=1;});})
+
+                          ],),),
+                      Container(child: Text("سفارش:"+tedade_sefaresh.toString()+"عدد ",textAlign: TextAlign.center,),),
+
+                      RaisedButton(
+                        child: Row(
+                          mainAxisAlignment:MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text("اضافه به سبد خرید  ",style: TextStyle(color: Colors.white),),
+                            Icon(Icons.add_shopping_cart,color: Colors.white,),
+                          ],
+                        ),
+                        onPressed: (){int i = 0;},
+                        color: Colors.green[500],
+                      )
+
+
+                    ],)
+
+                      ,)
+                )
+
+              ],
+            ));});
   }
 
 

@@ -4,8 +4,14 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:test_market/Model/Boxes.dart';
 import 'package:test_market/Model/Category.dart';
 import 'package:test_market/Model/CategoryProduct.dart';
+import 'package:test_market/Model/Cups.dart';
 import 'package:test_market/Model/Product.dart';
 import 'package:test_market/Model/Shop.dart';
+import 'package:test_market/Model/SpecialCake.dart';
+import 'package:test_market/Model/SpecialCake.dart';
+import 'package:test_market/Model/SpecialCake_afzodani.dart';
+import 'package:test_market/Model/SpecialCake_afzodani.dart';
+import 'package:test_market/Model/SpecialCake_afzodani.dart';
 import 'package:test_market/screens/home_screen.dart';
 import 'package:test_market/screens/product_screen.dart';
 import 'package:test_market/uitls/StoreCategoryClipper.dart';
@@ -137,6 +143,21 @@ class _Shop_Solo_ScreenState extends State<Shop_Solo_Screen> {
   shop_details[0].box.add(new Boxes(tedade_radif_jabe: 3,vazn_jabe: 0.5 ));
   shop_details[0].box.add(new Boxes(tedade_radif_jabe: 4,vazn_jabe: 1 ));
   shop_details[0].box.add(new Boxes(tedade_radif_jabe: 6,vazn_jabe: 2 ));
+
+  shop_details[0].cup = [];
+  shop_details[0].cup.add(new Cups(size: "متوسط" ,hajm: 270));
+  shop_details[0].cup.add(new Cups(size: "بزرگ" ,hajm: 360,));
+
+  shop_details[0].specialcake = [];
+  shop_details[0].specialcake.add(new SpecialCake(tedad: 5 ,vazn: 1));
+  shop_details[0].specialcake.add(new SpecialCake(tedad: 7 ,vazn: 1.5));
+  shop_details[0].specialcake.add(new SpecialCake(tedad: 9 ,vazn: 2));
+  shop_details[0].specialcake.add(new SpecialCake(tedad: 12,vazn: 2.5));
+
+  shop_details[0].specialcake_afzodani = [];
+  shop_details[0].specialcake_afzodani.add(new SpecialCake_afzodani(gheymat: 5,name: "لایه موزی"));
+  shop_details[0].specialcake_afzodani.add(new SpecialCake_afzodani(gheymat: 5,name: "لایه گردویی"));
+  shop_details[0].specialcake_afzodani.add(new SpecialCake_afzodani(gheymat: 5,name: "لایه شکلاتی"));
 
 if(localProducts.length==0)
 {  localProducts.add(new Product(id:1 ,title: " آجیل ", price: 200 , img:"http://192.168.43.159/flutter_app1/Shirini_Khoshk/1.png"));
@@ -371,7 +392,7 @@ if(localProducts.length==0)
                   ])
               ),
               height: 50,
-              child: Text(cat_pro_list[index].category_name,style: TextStyle(fontSize: 22,color: Colors.blueGrey[800],fontWeight: FontWeight.bold),),),
+              child: Container(alignment:Alignment.centerRight,child: Text(cat_pro_list[index].category_name,style: TextStyle(fontSize: 22,color: Colors.blueGrey[700],fontWeight: FontWeight.bold),)),),
           ),
 
           SizedBox(
@@ -496,14 +517,14 @@ if(localProducts.length==0)
   Widget ExplorBox (context,int i){
 
 
-    return GestureDetector(onTap : (){Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=> ProductPage(cat_pro_list[Category_index].category_products[i].id,shop_details[0].box)));},
+    return GestureDetector(onTap : (){Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=> ProductPage(cat_pro_list[Category_index].category_products[i].id,shop_details[0].box,shop_details[0].cup,shop_details[0].specialcake)));},
       child:Container( margin : EdgeInsets.all(3),decoration: BoxDecoration(color: Color(0xffF1E6DD),border: Border.all(width: 0.1 , color: Colors.grey), borderRadius: BorderRadius.all(Radius.circular(20))),
           child: Column(children: <Widget>[
             Image(image: NetworkImage(cat_pro_list[Category_index].category_products[i].img)),
             Column(children: <Widget>[
               Text(cat_pro_list[Category_index].category_products[i].title),
               Text(cat_pro_list[Category_index].category_products[i].price.toString()),
-              Container(width: 120, child: Text("4.5",textAlign: TextAlign.left, style: TextStyle(color: Colors.blueGrey , fontWeight: FontWeight.bold),), margin: EdgeInsets.only(top: 5),),
+              Container(width: 120, child: Text("4.5",textAlign: TextAlign.left, style: TextStyle(color: Colors.blueGrey , fontWeight: FontWeight.bold),), margin: EdgeInsets.only(top: 0),),
 
             ],)
           ],)),);

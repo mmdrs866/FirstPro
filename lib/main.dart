@@ -35,7 +35,7 @@ class homeView extends StatelessWidget {
     return
       MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(fontFamily: 'firstfont'),
+        theme: ThemeData(fontFamily: 'IRANSans'),
         localizationsDelegates: [
           // ... app-specific localization delegate[s] here
           GlobalMaterialLocalizations.delegate,
@@ -45,6 +45,7 @@ class homeView extends StatelessWidget {
         supportedLocales: [
           const Locale('fa'), // farsi
         ],
+        // Set Raleway as the default app font.
         home: Material( color :Colors.white ,child:homePage()),
 
       );

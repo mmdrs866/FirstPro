@@ -32,7 +32,7 @@ if(shops_cake.length==0)
   shops_cake.add(new Shop(title:"index 0 upper",img_url:"",id: 0, icons: iconlist ,shopcategory: 2 ));
     shops_cake.add(new Shop(title:"کانتینر",img_url:"http://192.168.43.159/flutter_app1/Shops/kantiner.png",id: 1, icons: iconlist ,shopcategory: 0 ));
     shops_cake.add(new Shop(title:"مهدیان",img_url:"http://192.168.43.159/flutter_app1/Shops/mahdian.png",id: 2, icons: iconlist ,shopcategory: 0));
-//    shops_cake.add(new Shop(title:"ناب",img_url:"http://192.168.43.159/flutter_app1/Shops/nab.png",id: 3,shopcategory: 0, icons: ["http://192.168.43.159/flutter_app1/Logo/icons_khoshk.png","http://192.168.43.159/flutter_app1/Logo/icons_donat.png","http://192.168.43.159/flutter_app1/Logo/icons_finger.png","http://192.168.43.159/flutter_app1/Logo/icons_shokolat.png",] ));
+    shops_cake.add(new Shop(title:"ناب",img_url:"http://192.168.43.159/flutter_app1/Shops/nab.png",id: 3,shopcategory: 0, icons: ["http://192.168.43.159/flutter_app1/Logo/icons_khoshk.png","http://192.168.43.159/flutter_app1/Logo/icons_donat.png","http://192.168.43.159/flutter_app1/Logo/icons_finger.png","http://192.168.43.159/flutter_app1/Logo/icons_shokolat.png",] ));
     shops_cake.add(new Shop(title:"کافه قنادی روشا",img_url:"http://192.168.43.159/flutter_app1/Shops/rosha.png",id: 4,shopcategory: 2, icons: iconlist ));
     shops_cake.add(new Shop(title:"روشا",img_url:"http://192.168.43.159/flutter_app1/Shops/rosha.png",id: 5,shopcategory: 0, icons: iconlist ));
     shops_cake.add(new Shop(title:"نیشکر",img_url:"http://192.168.43.159/flutter_app1/Shops/neyshekar.png",id: 6,shopcategory: 0, icons: iconlist ));
@@ -49,16 +49,16 @@ for(int i=0;i<shops_cake.length;i++){
     if(shops_cake[i].shopcategory==1){
       shops_cake.removeAt(i);
       removecounter+=1;
-      print(shops_cake[i].title+" removed");
+      // print(shops_cake[i].title+" removed");
     }
     if(shops_cake[i].shopcategory==2){
       shops_cake[i].shopcategory=0;
-      print(shops_cake[i].title+" changed");
+      // print(shops_cake[i].title+" changed");
     }
   }
 }
-print(shops_cake.length);
-print(shops_coffee.length);
+// print(shops_cake.length);
+// print(shops_coffee.length);
 
 
     return Scaffold(
@@ -182,7 +182,7 @@ print(shops_coffee.length);
           decoration: BoxDecoration(border: Border.all(color: Colors.blueGrey[400], width: 0.3), color: Color(0xffDFEEFF), borderRadius: BorderRadius.all(Radius.circular(20))),
           child: Column(children: <Widget>[
 
-            Container(height: 60,),
+            Container(height: 65,),
             Container(child: Text(list[index].title,style: TextStyle(fontSize: 17,),),alignment: Alignment(0.75, 0),),
             Divider(endIndent: 10,indent: 10),
 
@@ -207,7 +207,7 @@ print(shops_coffee.length);
 
     return Container(
       alignment: Alignment.topRight,
-        height: 100,
+        height: 80,
         width: 100,
         child: StaggeredGridView.countBuilder(
 
@@ -226,7 +226,7 @@ print(shops_coffee.length);
 
     return Container(
       alignment: Alignment.topRight,
-        height: 100,
+        height: 80,
         width: 100,
         child: StaggeredGridView.countBuilder(
 
@@ -236,7 +236,7 @@ print(shops_coffee.length);
             crossAxisSpacing: 5,
             mainAxisSpacing: 5,
             itemBuilder: IconListtab1,
-            itemCount: list.length,
+            itemCount: 4,
             staggeredTileBuilder: (index) => StaggeredTile.count(1,1)
         )
     );
@@ -253,7 +253,7 @@ print(shops_coffee.length);
 
   Widget IconView(context , index , List<String> list){
 
-    print(list.length.toString()+"    "+index.toString());
+    // print(list.length.toString()+"    "+index.toString());
     return Image(image: NetworkImage(list[index]));
   }
 

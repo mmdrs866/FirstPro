@@ -1,6 +1,8 @@
 import 'package:test_market/Model/Boxes.dart';
 import 'Comment.dart';
 import 'Cups.dart';
+import 'SpecialCake.dart';
+import 'SpecialCake_afzodani.dart';
 
 class Shop {
   int id;
@@ -14,7 +16,9 @@ class Shop {
   List<String> icons;
   List<Comment> comments;
   List<Boxes> box;
+  List<SpecialCake> specialcake;
   List<Cups> cup;
+  List<SpecialCake_afzodani> specialcake_afzodani;
 
-  Shop({this.id,this.rate,this.title,this.img_url,this.comments,this.delivery_price,this.active_status,this.active_time,this.icons,this.box,this.shopcategory});
+  Shop({this.id,this.rate,this.title,this.img_url,this.comments,this.delivery_price,this.active_status,this.active_time,this.icons,this.box,this.shopcategory,this.specialcake,this.cup,this.specialcake_afzodani});
 }

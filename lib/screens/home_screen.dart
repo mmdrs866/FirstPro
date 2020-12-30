@@ -5,10 +5,12 @@ import 'package:test_market/AppData.dart';
 import 'package:test_market/Model/AppSlider.dart';
 import 'package:test_market/Model/Boxes.dart';
 import 'package:test_market/Model/Category.dart';
+import 'package:test_market/Model/Cups.dart';
 import 'package:test_market/Model/Product.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:intl/intl.dart';
+import 'package:test_market/Model/SpecialCake.dart';
 import 'package:test_market/SliderView.dart';
 import 'package:test_market/screens/Cake_Screen.dart';
 import 'package:test_market/screens/product_screen.dart';
@@ -22,6 +24,8 @@ List<Category> category_home = [];
 List<Category> category_shirini = [];
 List<Category> category_coffee = [];
 List<Boxes> box___________mustchange_futureee_______ = [];
+List<Cups> cup___________mustchange_futureee_______ = [];
+List<SpecialCake> specialcake___________mustchange_futureee_______ = [];
 BuildContext context;
 
 int _selectedIndex = 0;
@@ -34,6 +38,34 @@ class homePage extends StatefulWidget {
 
 class _homePageState extends State<homePage> {
   int tab_index = 0;
+
+
+
+
+
+
+
+  void getCategoryList() {
+      var url = "http://mobile.cakeino.com/api/Category/GetCategory" ;
+
+      http.get(url).then((response) {
+        print(response.statusCode.toString() + " hyyyyyyyyyyyyyyyyyy");
+
+          List jsonResponse = convert.jsonDecode(response.body);
+        print(response.body + "bbbbbbbbbbbbbbbbbb");
+          for (int i = 0; i < jsonResponse.length; i++) {
+              setState(() {
+                category_home.add(new Category(
+                    cattype: int.parse(jsonResponse[i]['categoryType']),id: int.parse(jsonResponse[i]['id']),img: jsonResponse[i]['imagePath'],title: jsonResponse[i]['name'],));
+              });};});}
+
+
+
+
+
+
+
+
   void getProductList(String action, List<Product> list) {
     if (new_product.length == 0) {
       var url = "http://192.168.43.159/flutter_app1/?action=" + action;
@@ -85,22 +117,22 @@ class _homePageState extends State<homePage> {
 //   category_home.add({"title":" قایق بادی","img":"images/boat.jpg","price"});
 //   category_home.add({"title":"توپ بسکتبال","img":"images/ball.jpg","price"});
 //   category_home.add({"title":"جاروبرقی","img":"images/barghi.jpg"});
-
+    getCategoryList();
     getProductList("new_product", new_product);
     getProductList("order_product", order_product);
 
 
-    if(category_home.length==0)
-{  category_home.add(new Category(title:" شیرینی‌ تر ",img:"http://192.168.43.159/flutter_app1/Category/tar.png",cattype: 0));
+//     if(category_home.length==0)
+// {  category_home.add(new Category(title:" شیرینی‌ تر ",img:"http://192.168.43.159/flutter_app1/Category/tar.png",cattype: 0));
   category_home.add(new Category(title:" شیرینی‌ خشک ",img:"http://192.168.43.159/flutter_app1/Category/khoshk.png",cattype: 0));
-  category_home.add(new Category(title:" دونات ",img:"http://192.168.43.159/flutter_app1/Category/donat.png",cattype: 0));
-  category_home.add(new Category(title:" کیک روز ",img:"http://192.168.43.159/flutter_app1/Category/cake.png",cattype: 0));
-  category_home.add(new Category(title:" فینگر فود ",img:"http://192.168.43.159/flutter_app1/Category/fingerfood.png",cattype: 0));
-  category_home.add(new Category(title:" آجیل ",img:"http://192.168.43.159/flutter_app1/Category/ajil.png",cattype: 0));
-  category_home.add(new Category(title:" شکلات ",img:"http://192.168.43.159/flutter_app1/Category/shokolat.png",cattype: 0));
-  category_home.add(new Category(title:" یکبار مصرف ",img:"http://192.168.43.159/flutter_app1/Category/yebarmasraf.png",cattype: 0));
-  category_home.add(new Category(title:" نوشیدنی گرم ",img:"http://192.168.43.159/flutter_app1/Category/ghahve.png",cattype: 1));
-  category_home.add(new Category(title:" نوشیدنی سرد ",img:"http://192.168.43.159/flutter_app1/Category/ghahve.png",cattype: 1));}
+//   category_home.add(new Category(title:" دونات ",img:"http://192.168.43.159/flutter_app1/Category/donat.png",cattype: 0));
+//   category_home.add(new Category(title:" کیک روز ",img:"http://192.168.43.159/flutter_app1/Category/cake.png",cattype: 0));
+//   category_home.add(new Category(title:" فینگر فود ",img:"http://192.168.43.159/flutter_app1/Category/fingerfood.png",cattype: 0));
+//   category_home.add(new Category(title:" آجیل ",img:"http://192.168.43.159/flutter_app1/Category/ajil.png",cattype: 0));
+//   category_home.add(new Category(title:" شکلات ",img:"http://192.168.43.159/flutter_app1/Category/shokolat.png",cattype: 0));
+//   category_home.add(new Category(title:" یکبار مصرف ",img:"http://192.168.43.159/flutter_app1/Category/yebarmasraf.png",cattype: 0));
+//   category_home.add(new Category(title:" نوشیدنی گرم ",img:"http://192.168.43.159/flutter_app1/Category/ghahve.png",cattype: 1));
+//   category_home.add(new Category(title:" نوشیدنی سرد ",img:"http://192.168.43.159/flutter_app1/Category/ghahve.png",cattype: 1));}
 
 
     if(category_shirini.length==0)
@@ -450,7 +482,7 @@ Widget indexProductView(context,int index, List<Product> list) {
 
   ],)
 
-    ,onTap: (){Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=> ProductPage(list[index].id,box___________mustchange_futureee_______)));},);
+    ,onTap: (){Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=> ProductPage(list[index].id,box___________mustchange_futureee_______,cup___________mustchange_futureee_______,specialcake___________mustchange_futureee_______)));},);
 }
 
 
